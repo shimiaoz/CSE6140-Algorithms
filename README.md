@@ -1,2 +1,2 @@
 # CSE6140-Algorithms
-Computational Science &amp; Engineering (CSE) Algorithms
+Branch-and-Bound algorithm for minimum vertex cover problem
