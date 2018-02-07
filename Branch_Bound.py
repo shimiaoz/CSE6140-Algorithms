@@ -15,15 +15,14 @@ class BnB(object):
         '''
         Greedy approximation algorithm for vertex cover
         '''
-        appro_vertex_cover = set()
-        edges_covered = {}
+        appro_vertex_cover, edges_covered = set(), set()
 
         for u, v in G.edges_iter():
             if not ((u, v) in edges_covered or (v, u) in edges_covered):
                 appro_vertex_cover.update((u, v))
                 for temp_u, temp_v in G.edges([u, v]):
                     edge = (temp_u, temp_v) if temp_u <= temp_v else (temp_v, temp_u)
-                    edges_covered[edge] = 1
+                    edges_covered.add(edge)
         return appro_vertex_cover
 
     def get_childGraph(self, vertex, parent_graph):
@@ -119,3 +118,31 @@ class BnB(object):
             f.write('{}'.format(result[-1]))
 
         return minVC_val, minVC_list
+
+def test(filename):
+    G = read_graph('./Data/{}'.format(filename))
+    prefix = filename.split('.')[0]
+
+    start_time =  time.time()
+    minVC_BnB = BnB()
+    minVC_val, minVC_list = minVC_BnB.get_minimumVC(G, cutoff=5*60,
+                                sol='./test/{}.sol'.format(prefix),
+                                trace='./test/{}.trace'.format(prefix))
+    runtime = time.time() - start_time
+
+    assert(minVC_check(minVC_list, G))
+    print 'Minimum Vertex Cover for {}: {}'.format(prefix, minVC_val)
+    print 'Elapsed Time for {}s: {}'.format(prefix, runtime)
+    print
+
+if __name__ == '__main__':
+    from BnBHelperFuns import read_graph, minVC_check
+    '''
+    datafile_dir = './Data/'
+    datafiles = [f for f in os.listdir(datafile_dir) \
+                         if os.path.isfile(os.path.join(datafile_dir, f))]
+    for datafile in datafiles:
+        print 'Running BnB for {}'.format(datafile)
+        test(datafile)
+    '''
+    test('netscience.graph')
